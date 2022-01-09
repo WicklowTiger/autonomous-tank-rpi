@@ -3,6 +3,7 @@ import time
 
 from .config import *
 from .SocketReceiver import SocketReceiver
+from .TankController import TankController
 
 
 class ActionManager:
@@ -16,6 +17,7 @@ class ActionManager:
             ActionManager.__instance = self
             self.receiver_thread = None
             self.action_queue = {}
+            self.tank_controller = TankController()
 
     @staticmethod
     def get_instance():
@@ -29,6 +31,8 @@ class ActionManager:
         self.receiver_thread.start()
         while True:
             if len(self.action_queue.keys()) != 0:
-                print(list(self.action_queue.items())[0])
+                action = list(self.action_queue.items())[0]
+                self.action_queue.pop(action[0])
+                self.tank_controller.set_angle(int(action[1]))
             print("waiting for action")
             time.sleep(1)
