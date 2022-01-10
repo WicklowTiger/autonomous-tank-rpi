@@ -35,4 +35,4 @@ class ActionManager:
                 self.action_queue.pop(action[0])
                 self.tank_controller.set_angle(int(action[1]))
             print("waiting for action")
-            time.sleep(1)
+            time.sleep(2)
