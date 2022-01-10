@@ -4,6 +4,9 @@ from time import sleep
 
 
 class TankController:
+    """
+    Simple controller for turret servo + motors
+    """
     servo_signal_pin = 3
     
     def __init__(self):
@@ -13,7 +16,11 @@ class TankController:
         self.pwm = GPIO.PWM(self.servo_signal_pin, 50)
         self.pwm.start(0)
 
-    def set_angle(self, angle):
+    def set_angle(self, angle: int) -> None:
+        """
+        Converts angle to pwm signal and sends it to servo
+        TODO: add busy state
+        """
         duty = angle / 18 + 2
         GPIO.output(self.servo_signal_pin, True)
         self.pwm.ChangeDutyCycle(duty)

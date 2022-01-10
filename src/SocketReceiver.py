@@ -3,6 +3,11 @@ import time
 
 
 class SocketReceiver:
+    """
+    Wrapper for socket
+    Constructor takes IP:PORT + reference to message_queue
+    Received messages are stored in message_queue
+    """
     socket = None
 
     def __init__(self, udp_ip: str, udp_port: int, message_queue):

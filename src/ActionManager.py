@@ -7,6 +7,10 @@ from .TankController import TankController
 
 
 class ActionManager:
+    """
+    Singleton
+    Polls action_queue and distributes tasks accordingly
+    """
     __instance = None
 
     def __init__(self):
