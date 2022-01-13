@@ -36,7 +36,8 @@ class ActionManager:
         while True:
             if len(self.action_queue.keys()) != 0:
                 action = list(self.action_queue.items())[0]
+                if action[0] == "rotate":
+                    self.tank_controller.set_angle(int(action[1]))
                 self.action_queue.pop(action[0])
-                self.tank_controller.set_angle(int(action[1]))
             print("waiting for action")
-            time.sleep(2)
+            time.sleep(0.04)

@@ -1,5 +1,6 @@
 import socket
-import time
+
+from src.shared.conversion import decode_message
 
 
 class SocketReceiver:
@@ -25,4 +26,5 @@ class SocketReceiver:
         while True:
             data, sender_address = self.socket.recvfrom(1024)
             print(f"Received message: {data} from {sender_address}")
-            self.message_queue.update({'rotate': data.decode("utf-8")})
+            decoded = decode_message(data.decode("utf-8"))
+            self.message_queue.update({decoded[0]: decoded[1]})
