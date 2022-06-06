@@ -1,9 +1,10 @@
 import threading
 import time
 
-from .config import *
-from .SocketReceiver import SocketReceiver
-from .TankController import TankController
+from src.udp.config import *
+from src.udp.SocketReceiver import SocketReceiver
+from .TankController import TankController, ACTION_SHOOT, ACTION_ROTATE, ACTION_SHOOT_TARGET, controller_action_queue
+from src.decision.decision import request_action
 
 
 class ActionManager:
@@ -22,6 +23,7 @@ class ActionManager:
             self.receiver_thread = None
             self.action_queue = {}
             self.tank_controller = TankController()
+            self.mode = 0  # 0 = auto, 1 = manual
 
     @staticmethod
     def get_instance():
@@ -34,10 +36,16 @@ class ActionManager:
         self.receiver_thread = threading.Thread(target=socket_receiver.run)
         self.receiver_thread.start()
         while True:
-            if len(self.action_queue.keys()) != 0:
-                action = list(self.action_queue.items())[0]
-                if action[0] == "rotate":
-                    self.tank_controller.set_angle(int(action[1]))
-                self.action_queue.pop(action[0])
+            if self.mode == 0:
+                if self.tank_controller.busy is False:
+                    action = request_action()
+                    if action is not None:
+                        controller_action_queue.update({action[0]: action[1]})
+            else:
+                if len(self.action_queue.keys()) != 0:
+                    action = list(self.action_queue.items())[0]
+                    if action[1] == ACTION_ROTATE:
+                        controller_action_queue.update({action[0]: [action[1][0], action[1][1]]})
+                    self.action_queue.pop(action[0])
             print("waiting for action")
             time.sleep(0.04)
